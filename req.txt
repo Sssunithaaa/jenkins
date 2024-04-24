@@ -1,0 +1,42 @@
+1.  Install Jenkins and start the server
+    --- Go to Command Prompt
+       cd C:\Program Files\Jenkins
+        java -jar jenkins.war --httpPort=8088
+      ### Donot close the window ####
+    -- our jenkins server is running on http://172.1.14.8:8088   or 
+       http://localhost:8088
+2. change the admin password
+3. Install Docker Desktop in windows or docker.io in Ubuntu
+
+=========================================================================
+4. create ssh-keygen to connect jenkins with github
+5. c:\Users\Admin\ssh-keygen -t ed25519 
+6. Once key is created then head over to github and add your ssh (private) keys available in
+  -- C:\Users\Admin\.ssh\id_ed25519.pub
+  -- Go to Github account setting and select SSH and GPG keys, and click on new SSH Key
+7. Next install github-integration plugin in jenkins.
+   --Go to Manage Jenkins > Plugins > Available Plugins. 
+   --Search for github integration and click on install without restart. 
+   --Once done check whether it is enabled or not by navigating into installed plugins.
+8. Go to your git hub repository setting add webhook to trigger jenkins
+    --It should appear like this once webhook is added.
+
+      http://172.1.14.8:8088/nodejs-jenkins-2024/github-webhook
+
+======Jenkin configuration in the server ==========
+1. Go to Jenkins > create a new Freestyle Project and configure the job
+2. Under General check the github project and add the github url
+3. Select git in source code management, add github url and add main or master in branches to build.
+4. Click on add credentials and select ssh username with private key. 
+    --Add Jenkins credentials while adding Git URL (Jenkins privately connected with GitHub via SSH-key)
+5. Add your ssh key and Click on Add and Save
+6. Select GitHub hook trigger for GITScm polling under build trigger
+7. Select execute shell for ubuntu OR Execute windows batch command for Windows
+    in build steps and enter the followin commands.
+    docker stop nodeappcont
+    docker rm nodeappcont
+    docker build -t nodeapp .
+    docker run -d -p 49162:8080 --name nodeappcont nodeapp
+8. Then apply & save the project
+9. We can view the automated execution of Jenkins Job success.
+10. Goto Docker Desktop and run the container to check the output
